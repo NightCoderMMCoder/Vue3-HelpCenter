@@ -1,14 +1,29 @@
 import { firebaseAuth } from "../../firebase/init";
 export default {
   namespaced: true,
-  state: () => ({}),
-  mutations: {},
+  state: () => ({
+    error: null,
+  }),
+  mutations: {
+    setError(state, payload) {
+      state.error = payload;
+    },
+  },
   actions: {
-    async register(_, user) {
-      await firebaseAuth.createUserWithEmailAndPassword(
-        user.email,
-        user.password
-      );
+    async register({ commit }, user) {
+      try {
+        await firebaseAuth.createUserWithEmailAndPassword(
+          user.email,
+          user.password
+        );
+      } catch (error) {
+        commit("setError", error.message);
+      }
+    },
+  },
+  getters: {
+    error(state) {
+      return state.error;
     },
   },
 };
