@@ -3,7 +3,7 @@
     <div class="card">
       <div class="card-header">Register</div>
       <div class="card-body">
-        <form>
+        <form @submit.prevent="handleSubmit">
           <base-control-input
             label-name="Name"
             v-model="name"
@@ -27,16 +27,23 @@
 
 <script>
 import { reactive, toRefs } from "vue";
+import { useStore } from "vuex";
 import BaseControlInput from "../../components/UI/BaseControlInput.vue";
 export default {
   components: { BaseControlInput },
   setup() {
+    const store = useStore();
     const user = reactive({
       name: "adsf",
       email: "",
       password: "",
     });
-    return { ...toRefs(user) };
+
+    const handleSubmit = () => {
+      store.dispatch("Auth/register", user);
+    };
+
+    return { ...toRefs(user), handleSubmit };
   },
 };
 </script>
