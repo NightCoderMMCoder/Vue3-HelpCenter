@@ -1,0 +1,49 @@
+<template>
+  <div class="form-group">
+    <label>{{ labelName }}</label>
+    <input
+      :type="type"
+      class="form-control"
+      :value="modelValue"
+      @input="(e) => $emit('update:modelValue', e.target.value)"
+    />
+  </div>
+</template>
+
+<script>
+export default {
+  emits: ["update:modelValue"],
+  props: {
+    labelName: {
+      type: String,
+      required: true,
+    },
+    type: {
+      type: String,
+      default: "text",
+    },
+    modelValue: String,
+  },
+};
+</script>
+
+<style lang="scss" scoped>
+.form-group {
+  margin-bottom: 20px;
+  label {
+    display: inline-block;
+    margin-bottom: 8px;
+  }
+
+  .form-control {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #00000028;
+    outline: none;
+    border-radius: 5px;
+    &:focus {
+      box-shadow: 0 0 0 0.1rem #ffcd9498;
+    }
+  }
+}
+</style>

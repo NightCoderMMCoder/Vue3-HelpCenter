@@ -2,7 +2,9 @@
   <nav>
     <div class="container">
       <div class="navbar">
-        <h1><span>Help </span> Center</h1>
+        <router-link :to="{ name: 'Home' }">
+          <h1><span>Help </span> Center</h1>
+        </router-link>
       </div>
       <input
         type="text"
@@ -12,7 +14,9 @@
       <div>
         <div class="btn-groups">
           <button class="btn btn-secondary">Login</button>
-          <button class="btn btn-secondary">Register</button>
+          <router-link :to="{ name: 'Register' }">
+            <button class="btn btn-secondary">Register</button>
+          </router-link>
         </div>
       </div>
     </div>
