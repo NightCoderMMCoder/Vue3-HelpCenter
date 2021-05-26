@@ -29,7 +29,12 @@
         </div>
       </div>
       <div class="btn-groups">
-        <button class="btn btn-secondary">Edit</button>
+        <button
+          class="btn btn-secondary"
+          @click="$router.push({ name: 'EditPost', params: { id: post.id } })"
+        >
+          Edit
+        </button>
         <button class="btn btn-primary" @click="handleDelete">Delete</button>
       </div>
     </div>

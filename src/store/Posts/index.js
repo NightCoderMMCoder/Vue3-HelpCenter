@@ -32,6 +32,23 @@ export default {
         commit("setError", error.message);
       }
     },
+    async updatePost({ commit, rootState, dispatch }, post) {
+      const { id: docId, filePath } = rootState.Posts.post;
+      if (!post.image) {
+        delete post.image;
+        await postsRef.doc(docId).update(post);
+      } else {
+        await storageRef.child(filePath).delete();
+        const imageURL = await dispatch("uploadImage", post.image);
+        let newPost = {
+          ...post,
+          imageURL,
+          filePath: post.image.name,
+        };
+        delete newPost.image;
+        await postsRef.doc(docId).update(newPost);
+      }
+    },
     async uploadImage({ commit }, image) {
       try {
         const uploadedImage = await storageRef.child(image.name).put(image);

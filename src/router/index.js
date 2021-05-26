@@ -4,6 +4,7 @@ import Register from "../views/Auth/Register.vue";
 import Login from "../views/Auth/Login.vue";
 import CreatePost from "../views/Posts/CreatePost";
 import PostDetails from "../views/Posts/PostDetails";
+import EditPost from "../views/Posts/EditPost";
 
 const routes = [
   {
@@ -30,6 +31,11 @@ const routes = [
     path: "/posts/:id",
     name: "PostDetails",
     component: PostDetails,
+  },
+  {
+    path: "/posts/edit/:id",
+    name: "EditPost",
+    component: EditPost,
   },
 ];
 
