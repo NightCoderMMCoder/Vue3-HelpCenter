@@ -27,7 +27,6 @@ export default {
           email: res.user.email,
           uid: res.user.uid,
         });
-        console.log(res);
       } catch (error) {
         commit("setError", error.message);
       }

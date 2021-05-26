@@ -2,11 +2,20 @@
   <div class="form-group">
     <label>{{ labelName }}</label>
     <input
+      v-if="controlType === 'input'"
       :type="type"
       class="form-control"
       :value="modelValue"
       @input="(e) => $emit('update:modelValue', e.target.value)"
     />
+    <textarea
+      v-else-if="controlType === 'textarea'"
+      class="form-control"
+      rows="10"
+      :value="modelValue"
+      @input="(e) => $emit('update:modelValue', e.target.value)"
+    ></textarea>
+    <input type="file" class="form-control" v-else />
     <slot></slot>
   </div>
 </template>
@@ -24,6 +33,10 @@ export default {
       default: "text",
     },
     modelValue: String,
+    controlType: {
+      type: String,
+      default: "input",
+    },
   },
 };
 </script>

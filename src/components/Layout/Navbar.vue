@@ -5,6 +5,14 @@
         <router-link :to="{ name: 'Home' }">
           <h1><span>Help </span> Center</h1>
         </router-link>
+        <ul>
+          <router-link :to="{ name: 'Home' }">
+            <li>Home</li>
+          </router-link>
+          <router-link :to="{ name: 'CreatePost' }">
+            <li>Create Post</li>
+          </router-link>
+        </ul>
       </div>
       <input
         type="text"
@@ -94,7 +102,7 @@ nav {
       box-shadow: 0 0 0 0.1rem #ffcd9498;
     }
   }
-  .router-link-exact-active li::after {
+  .active li::after {
     content: "";
     position: absolute;
     border-bottom: 3px solid var(--secondary);
