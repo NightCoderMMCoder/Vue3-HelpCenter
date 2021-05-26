@@ -36,19 +36,19 @@
 <script>
 import { computed, reactive, ref, toRefs } from "vue";
 import { useStore } from "vuex";
+import { onBeforeRouteLeave, useRouter } from "vue-router";
 import BaseControlInput from "../../components/UI/BaseControlInput.vue";
 export default {
   components: { BaseControlInput },
   setup() {
     const store = useStore();
+    const router = useRouter();
     const user = reactive({
       name: "",
       email: "@gmail.com",
       password: "123456",
     });
     const errors = ref({});
-
-    console.log(Object.entries(user));
 
     const validation = () => {
       errors.value = {};
@@ -61,6 +61,24 @@ export default {
       }
       return formValidate;
     };
+    onBeforeRouteLeave((_, _1, next) => {
+      let isData = false;
+      Object.values(user).forEach((val) => {
+        if (val) {
+          isData = true;
+        }
+      });
+      if (isData) {
+        const confirm = window.confirm(
+          "Do you really want to leave? You have unsaved changes!"
+        );
+        if (confirm) {
+          next();
+        }
+      } else {
+        next();
+      }
+    });
 
     const handleSubmit = () => {
       let isValidate = validation();
@@ -68,7 +86,6 @@ export default {
         store.dispatch("Auth/register", user);
       }
     };
-
     const error = computed(() => store.getters["Auth/error"]);
 
     return { ...toRefs(user), handleSubmit, error, errors };

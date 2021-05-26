@@ -11,7 +11,6 @@ let firebaseConfig = {
 };
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
-
 let firebaseAuth = firebase.auth();
 
 export { firebaseAuth };
