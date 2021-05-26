@@ -6,9 +6,13 @@
 </template>
 
 <script>
+import { useStore } from "vuex";
 import Navbar from "./components/Layout/Navbar.vue";
 export default {
   components: { Navbar },
-  setup() {},
+  setup() {
+    const store = useStore();
+    store.dispatch("Auth/handleAuthStateChanged");
+  },
 };
 </script>

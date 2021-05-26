@@ -12,7 +12,11 @@
         class="form-control"
       />
       <div>
-        <div class="btn-groups">
+        <div v-if="user">
+          <span class="username">{{ user.name }}</span>
+          <button class="btn btn-secondary" @click="logout">Logout</button>
+        </div>
+        <div class="btn-groups" v-else>
           <router-link :to="{ name: 'Login' }">
             <button class="btn btn-secondary">Login</button>
           </router-link>
@@ -26,7 +30,19 @@
 </template>
 
 <script>
-export default {};
+import { computed } from "vue";
+import { useStore } from "vuex";
+export default {
+  setup() {
+    const store = useStore();
+    const user = computed(() => store.getters["Auth/user"]);
+
+    const logout = () => {
+      store.dispatch("Auth/logout");
+    };
+    return { user, logout };
+  },
+};
 </script>
 
 <style lang="scss" scoped>
