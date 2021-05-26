@@ -3,19 +3,22 @@
     <div class="card">
       <div class="card-header">Create Post</div>
       <div class="card-body">
-        <form>
-          <base-control-input
-            label-name="Facebook Page Name"
-            v-model="name"
-          ></base-control-input>
-          <base-control-input
-            label-name="Facebook Page Link"
-            v-model="link"
-          ></base-control-input>
-          <base-control-input
-            label-name="Phone"
-            v-model="phone"
-          ></base-control-input>
+        <form @submit.prevent="handleSubmit">
+          <base-control-input label-name="Facebook Page Name" v-model="name">
+            <small v-if="errors.name" class="error-message">
+              {{ errors.name }}
+            </small>
+          </base-control-input>
+          <base-control-input label-name="Facebook Page Link" v-model="link">
+            <small v-if="errors.link" class="error-message">
+              {{ errors.link }}
+            </small>
+          </base-control-input>
+          <base-control-input label-name="Phone" v-model="phone">
+            <small v-if="errors.phone" class="error-message">
+              {{ errors.phone }}
+            </small>
+          </base-control-input>
           <base-control-input
             label-name="Email(Optional)"
             type="email"
@@ -32,18 +35,30 @@
                 <i class="fas fa-times" @click="removeSupport(idx)"></i>
               </base-badge>
             </div>
+
+            <small v-if="errors.supports" class="error-message">
+              {{ errors.supports }}
+            </small>
           </base-control-input>
           <base-control-input
             label-name="Image"
             control-type="image"
             @change="uploadImage"
-          ></base-control-input>
+          >
+            <small v-if="errors.image" class="error-message">
+              {{ errors.image }}
+            </small>
+          </base-control-input>
           <img :src="previewImage" alt="" />
           <base-control-input
             label-name="Description"
             control-type="textarea"
             v-model="description"
-          ></base-control-input>
+          >
+            <small v-if="errors.description" class="error-message">
+              {{ errors.description }}
+            </small>
+          </base-control-input>
           <button class="btn btn-secondary">Create Post</button>
         </form>
       </div>
@@ -55,6 +70,8 @@
 import { reactive, ref, toRefs } from "vue";
 import BaseControlInput from "../../components/UI/BaseControlInput.vue";
 import BaseBadge from "../../components/UI/BaseBadge.vue";
+import useValidation from "../../hooks/validation";
+
 export default {
   components: { BaseControlInput, BaseBadge },
   setup() {
@@ -67,6 +84,7 @@ export default {
       image: "",
       description: "",
     });
+    const { validation, errors } = useValidation(post);
     const support = ref("");
     const addSupport = () => {
       if (support.value && post.supports.length < 5) {
@@ -86,13 +104,18 @@ export default {
         const reader = new FileReader();
         reader.onload = function(e) {
           previewImage.value = e.target.result;
-          console.log(e.target.result);
         };
         reader.readAsDataURL(file);
         previewImage.value = file;
         post.image = file;
       }
     };
+
+    const handleSubmit = () => {
+      let isValidate = validation({ email: false });
+      console.log(isValidate);
+    };
+
     return {
       ...toRefs(post),
       support,
@@ -100,6 +123,8 @@ export default {
       previewImage,
       addSupport,
       removeSupport,
+      handleSubmit,
+      errors,
     };
   },
 };

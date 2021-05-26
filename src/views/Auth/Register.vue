@@ -38,6 +38,8 @@ import { computed, reactive, ref, toRefs } from "vue";
 import { useStore } from "vuex";
 import { onBeforeRouteLeave, useRouter } from "vue-router";
 import BaseControlInput from "../../components/UI/BaseControlInput.vue";
+import useValidation from "../../hooks/validation";
+
 export default {
   components: { BaseControlInput },
   setup() {
@@ -48,21 +50,10 @@ export default {
       email: "@gmail.com",
       password: "123456",
     });
-    const errors = ref({});
+    const { validation, errors } = useValidation(user);
 
     const error = computed(() => store.getters["Auth/error"]);
 
-    const validation = () => {
-      errors.value = {};
-      let formValidate = true;
-      for (let [key, value] of Object.entries(user)) {
-        if (!value) {
-          formValidate = false;
-          errors.value[key] = `Please fill the ${key} field.`;
-        }
-      }
-      return formValidate;
-    };
     onBeforeRouteLeave((_, _1, next) => {
       let isData = false;
       Object.values(user).forEach((val) => {
