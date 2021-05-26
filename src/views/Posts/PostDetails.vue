@@ -1,4 +1,13 @@
 <template>
+  <div class="error" v-if="error">
+    <h2>{{ error }}</h2>
+    <button
+      class="btn btn-secondary"
+      @click="$router.replace({ name: 'Home' })"
+    >
+      Go Home
+    </button>
+  </div>
   <div class="details" v-if="post">
     <div>
       <h2>{{ post.name }}</h2>
@@ -21,7 +30,7 @@
       </div>
       <div class="btn-groups">
         <button class="btn btn-secondary">Edit</button>
-        <button class="btn btn-primary">Delete</button>
+        <button class="btn btn-primary" @click="handleDelete">Delete</button>
       </div>
     </div>
     <div>
@@ -51,13 +60,14 @@
 
 <script>
 import { computed, ref } from "vue";
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import { useStore } from "vuex";
 import BaseBadge from "../../components/UI/BaseBadge.vue";
 export default {
   components: { BaseBadge },
   setup() {
     const route = useRoute();
+    const router = useRouter();
     const store = useStore();
 
     const postId = route.params.id;
@@ -77,7 +87,15 @@ export default {
       }, 1000);
     };
 
-    return { post, copyLink, link, isCopied };
+    const error = computed(() => store.getters["Posts/error"]);
+    const handleDelete = async () => {
+      await store.dispatch("Posts/deletePost", post.value.id);
+      if (!error.value) {
+        router.push({ name: "Home" });
+      }
+    };
+
+    return { post, copyLink, link, isCopied, handleDelete, error };
   },
 };
 </script>
@@ -137,5 +155,12 @@ export default {
 input {
   opacity: 0;
   position: absolute;
+}
+.error {
+  padding: 30px 20px;
+  margin-top: 50px;
+  h2 {
+    margin-bottom: 20px;
+  }
 }
 </style>

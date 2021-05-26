@@ -1,5 +1,6 @@
 import { db, fireStorage } from "../../firebase/init";
 const postsRef = db.collection("posts");
+const storageRef = fireStorage.ref("posts");
 
 export default {
   namespaced: true,
@@ -33,8 +34,7 @@ export default {
     },
     async uploadImage({ commit }, image) {
       try {
-        const storage = fireStorage.ref("posts");
-        const uploadedImage = await storage.child(image.name).put(image);
+        const uploadedImage = await storageRef.child(image.name).put(image);
         const imageURL = await uploadedImage.ref.getDownloadURL();
         return imageURL;
       } catch (error) {
@@ -42,11 +42,29 @@ export default {
       }
     },
     async getPost({ commit }, id) {
-      const doc = await postsRef.doc(id).get();
-      commit("setPost", {
-        ...doc.data(),
-        id: doc.id,
-      });
+      commit("setError", null);
+      try {
+        const doc = await postsRef.doc(id).get();
+        if (!doc.exists) {
+          throw new Error("Data not found!!!");
+        }
+        commit("setPost", {
+          ...doc.data(),
+          id: doc.id,
+        });
+      } catch (error) {
+        commit("setError", error.message);
+      }
+    },
+    async deletePost({ commit, rootState }, id) {
+      const filePath = rootState.Posts.post.filePath;
+      commit("setError", null);
+      try {
+        await postsRef.doc(id).delete();
+        await storageRef.child(filePath).delete();
+      } catch (error) {
+        commit("setError", error.message);
+      }
     },
   },
   getters: {
