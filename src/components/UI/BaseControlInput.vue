@@ -15,14 +15,19 @@
       :value="modelValue"
       @input="(e) => $emit('update:modelValue', e.target.value)"
     ></textarea>
-    <input type="file" class="form-control" v-else />
+    <input
+      type="file"
+      class="form-control"
+      @change="(e) => $emit('uploadImage', e)"
+      v-else
+    />
     <slot></slot>
   </div>
 </template>
 
 <script>
 export default {
-  emits: ["update:modelValue"],
+  emits: ["update:modelValue", "uploadImage"],
   props: {
     labelName: {
       type: String,
