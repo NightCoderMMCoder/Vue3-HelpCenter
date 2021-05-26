@@ -1,20 +1,22 @@
 <template>
   <div class="details">
     <div>
-      <h2>Heading</h2>
-      <img src="" alt="" />
+      <h2>{{ post.name }}</h2>
+      <img :src="post.imageURL" alt="" />
       <div>
-        <base-badge>Badge</base-badge>
+        <base-badge v-for="(support, idx) in post.supports" :key="idx">
+          {{ support }}
+        </base-badge>
       </div>
       <div class="contact-info">
         <h4>Contact Info</h4>
         <div>
           <span>Phone: </span>
-          <span>2343423</span>
+          <span>{{ post.phone }}</span>
         </div>
-        <div>
+        <div v-if="post.email">
           <span>Email: </span>
-          <span>2343423</span>
+          <span>{{ post.email }}</span>
         </div>
       </div>
       <div class="btn-groups">
@@ -25,7 +27,7 @@
     <div>
       <div class="link">
         <p class="copy">
-          <span class="link">link</span>
+          <span class="link">{{ post.link }}</span>
           <i class="fas fa-copy"></i>
         </p>
         <a href="" target="_blank">
@@ -35,7 +37,7 @@
       <div class="desc">
         <h4>Description:</h4>
         <p>
-          description
+          {{ post.description }}
         </p>
       </div>
       <div class="btn-groups">
@@ -46,9 +48,23 @@
 </template>
 
 <script>
+import { computed } from "vue";
+import { useRoute } from "vue-router";
+import { useStore } from "vuex";
 import BaseBadge from "../../components/UI/BaseBadge.vue";
 export default {
   components: { BaseBadge },
+  setup() {
+    const route = useRoute();
+    const store = useStore();
+    const postId = route.params.id;
+
+    const post = computed(() => store.getters["Posts/post"]);
+
+    store.dispatch("Posts/getPost", postId);
+
+    return { post };
+  },
 };
 </script>
 

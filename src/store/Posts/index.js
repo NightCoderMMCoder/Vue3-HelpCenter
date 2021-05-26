@@ -1,13 +1,18 @@
 import { db, fireStorage } from "../../firebase/init";
+const postsRef = db.collection("posts");
 
 export default {
   namespaced: true,
   state: () => ({
     error: null,
+    post: null,
   }),
   mutations: {
-    setError(state, payload) {
-      state.error = payload;
+    setError(state, error) {
+      state.error = error;
+    },
+    setPost(state, post) {
+      state.post = post;
     },
   },
   actions: {
@@ -21,8 +26,7 @@ export default {
           filePath: post.image.name,
         };
         delete newPost.image;
-        console.log(newPost);
-        db.collection("posts").add(newPost);
+        postsRef.add(newPost);
       } catch (error) {
         commit("setError", error.message);
       }
@@ -37,6 +41,20 @@ export default {
         commit("setError", error.message);
       }
     },
+    async getPost({ commit }, id) {
+      const doc = await postsRef.doc(id).get();
+      commit("setPost", {
+        ...doc.data(),
+        id: doc.id,
+      });
+    },
   },
-  getters: {},
+  getters: {
+    post(state) {
+      return state.post;
+    },
+    error(state) {
+      return state.error;
+    },
+  },
 };
