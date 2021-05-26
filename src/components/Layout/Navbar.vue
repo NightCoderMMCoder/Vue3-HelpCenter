@@ -13,7 +13,9 @@
       />
       <div>
         <div class="btn-groups">
-          <button class="btn btn-secondary">Login</button>
+          <router-link :to="{ name: 'Login' }">
+            <button class="btn btn-secondary">Login</button>
+          </router-link>
           <router-link :to="{ name: 'Register' }">
             <button class="btn btn-secondary">Register</button>
           </router-link>

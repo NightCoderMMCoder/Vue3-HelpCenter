@@ -11,8 +11,20 @@ export default {
   },
   actions: {
     async register({ commit }, user) {
+      commit("setError", null);
       try {
         await firebaseAuth.createUserWithEmailAndPassword(
+          user.email,
+          user.password
+        );
+      } catch (error) {
+        commit("setError", error.message);
+      }
+    },
+    async login({ commit }, user) {
+      commit("setError", null);
+      try {
+        await firebaseAuth.signInWithEmailAndPassword(
           user.email,
           user.password
         );
