@@ -71,10 +71,12 @@ import { reactive, ref, toRefs } from "vue";
 import BaseControlInput from "../../components/UI/BaseControlInput.vue";
 import BaseBadge from "../../components/UI/BaseBadge.vue";
 import useValidation from "../../hooks/validation";
+import { useStore } from "vuex";
 
 export default {
   components: { BaseControlInput, BaseBadge },
   setup() {
+    const store = useStore();
     const post = reactive({
       name: "",
       link: "",
@@ -100,20 +102,21 @@ export default {
     const type = ["image/png", "image/jpeg", "image/jpg"];
     const uploadImage = (e) => {
       let file = e.target.files[0];
-      if (type.includes(file.type)) {
+      if (type.includes(file?.type)) {
         const reader = new FileReader();
         reader.onload = function(e) {
           previewImage.value = e.target.result;
         };
         reader.readAsDataURL(file);
-        previewImage.value = file;
         post.image = file;
       }
     };
 
     const handleSubmit = () => {
       let isValidate = validation({ email: false });
-      console.log(isValidate);
+      // if (isValidate) {
+      store.dispatch("Posts/createPost", post);
+      // }
     };
 
     return {
