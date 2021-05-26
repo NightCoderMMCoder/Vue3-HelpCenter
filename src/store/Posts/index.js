@@ -1,4 +1,4 @@
-import { fireStorage } from "../../firebase/init";
+import { db, fireStorage } from "../../firebase/init";
 
 export default {
   namespaced: true,
@@ -11,9 +11,21 @@ export default {
     },
   },
   actions: {
-    async createPost({ dispatch }, post) {
+    async createPost({ dispatch, commit }, post) {
+      commit("setError", null);
       const imageURL = await dispatch("uploadImage", post.image);
-      console.log(imageURL);
+      try {
+        let newPost = {
+          ...post,
+          imageURL,
+          filePath: post.image.name,
+        };
+        delete newPost.image;
+        console.log(newPost);
+        db.collection("posts").add(newPost);
+      } catch (error) {
+        commit("setError", error.message);
+      }
     },
     async uploadImage({ commit }, image) {
       try {

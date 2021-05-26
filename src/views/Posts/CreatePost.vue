@@ -90,7 +90,7 @@ export default {
     const support = ref("");
     const addSupport = () => {
       if (support.value && post.supports.length < 5) {
-        post.supports.push(support.value);
+        post.supports.push(support.value.toUpperCase());
         support.value = "";
       }
     };
@@ -114,9 +114,9 @@ export default {
 
     const handleSubmit = () => {
       let isValidate = validation({ email: false });
-      // if (isValidate) {
-      store.dispatch("Posts/createPost", post);
-      // }
+      if (isValidate) {
+        store.dispatch("Posts/createPost", post);
+      }
     };
 
     return {
