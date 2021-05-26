@@ -50,6 +50,8 @@ export default {
     });
     const errors = ref({});
 
+    const error = computed(() => store.getters["Auth/error"]);
+
     const validation = () => {
       errors.value = {};
       let formValidate = true;
@@ -80,13 +82,18 @@ export default {
       }
     });
 
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
       let isValidate = validation();
       if (isValidate) {
-        store.dispatch("Auth/register", user);
+        await store.dispatch("Auth/register", user);
+        if (!error.value) {
+          user.name = "";
+          user.email = "";
+          user.password = "";
+          router.push({ name: "Home" });
+        }
       }
     };
-    const error = computed(() => store.getters["Auth/error"]);
 
     return { ...toRefs(user), handleSubmit, error, errors };
   },
