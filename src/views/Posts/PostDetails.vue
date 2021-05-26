@@ -1,5 +1,5 @@
 <template>
-  <div class="details">
+  <div class="details" v-if="post">
     <div>
       <h2>{{ post.name }}</h2>
       <img :src="post.imageURL" alt="" />
@@ -28,12 +28,14 @@
       <div class="link">
         <p class="copy">
           <span class="link">{{ post.link }}</span>
-          <i class="fas fa-copy"></i>
+          <i class="fas fa-copy" @click="copyLink"></i>
         </p>
+        <input type="text" :value="post.link" ref="link" />
         <a href="" target="_blank">
           <button class="btn btn-primary">Go Facebook Page</button>
         </a>
       </div>
+      <small v-if="isCopied">Link copied successfully!</small>
       <div class="desc">
         <h4>Description:</h4>
         <p>
@@ -48,7 +50,7 @@
 </template>
 
 <script>
-import { computed } from "vue";
+import { computed, ref } from "vue";
 import { useRoute } from "vue-router";
 import { useStore } from "vuex";
 import BaseBadge from "../../components/UI/BaseBadge.vue";
@@ -57,13 +59,25 @@ export default {
   setup() {
     const route = useRoute();
     const store = useStore();
+
     const postId = route.params.id;
-
     const post = computed(() => store.getters["Posts/post"]);
-
     store.dispatch("Posts/getPost", postId);
 
-    return { post };
+    const link = ref(null);
+    const isCopied = ref(false);
+    let timer;
+    const copyLink = () => {
+      link.value.select();
+      document.execCommand("copy");
+      isCopied.value = true;
+      clearTimeout(timer);
+      timer = setTimeout(() => {
+        isCopied.value = false;
+      }, 1000);
+    };
+
+    return { post, copyLink, link, isCopied };
   },
 };
 </script>
@@ -119,5 +133,9 @@ export default {
       margin-left: 20px;
     }
   }
+}
+input {
+  opacity: 0;
+  position: absolute;
 }
 </style>
