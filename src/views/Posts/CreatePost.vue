@@ -23,12 +23,20 @@
           ></base-control-input>
           <base-control-input
             label-name="Supports"
-            v-model="support"
-          ></base-control-input>
+            v-model.trim="support"
+            @blur="addSupport"
+          >
+            <div class="badge-groups">
+              <base-badge v-for="(support, idx) in supports" :key="idx">
+                {{ support }}
+                <i class="fas fa-times" @click="removeSupport(idx)"></i>
+              </base-badge>
+            </div>
+          </base-control-input>
           <base-control-input
             label-name="Image"
             control-type="image"
-            @upload-image="uploadImage"
+            @change="uploadImage"
           ></base-control-input>
           <img :src="previewImage" alt="" />
           <base-control-input
@@ -46,8 +54,9 @@
 <script>
 import { reactive, ref, toRefs } from "vue";
 import BaseControlInput from "../../components/UI/BaseControlInput.vue";
+import BaseBadge from "../../components/UI/BaseBadge.vue";
 export default {
-  components: { BaseControlInput },
+  components: { BaseControlInput, BaseBadge },
   setup() {
     const post = reactive({
       name: "",
@@ -59,6 +68,16 @@ export default {
       description: "",
     });
     const support = ref("");
+    const addSupport = () => {
+      if (support.value && post.supports.length < 5) {
+        post.supports.push(support.value);
+        support.value = "";
+      }
+    };
+    const removeSupport = (idx) => {
+      post.supports.splice(idx, 1);
+    };
+
     const previewImage = ref(null);
     const type = ["image/png", "image/jpeg", "image/jpg"];
     const uploadImage = (e) => {
@@ -74,7 +93,14 @@ export default {
         post.image = file;
       }
     };
-    return { ...toRefs(post), support, uploadImage, previewImage };
+    return {
+      ...toRefs(post),
+      support,
+      uploadImage,
+      previewImage,
+      addSupport,
+      removeSupport,
+    };
   },
 };
 </script>

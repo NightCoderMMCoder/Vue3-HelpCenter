@@ -4,7 +4,9 @@ import router from "./router";
 import store from "./store";
 import "./main.scss";
 
-createApp(App)
+let app = createApp(App);
+
+app
   .use(store)
   .use(router)
   .mount("#app");

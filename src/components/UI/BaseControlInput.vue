@@ -7,6 +7,7 @@
       class="form-control"
       :value="modelValue"
       @input="(e) => $emit('update:modelValue', e.target.value)"
+      v-bind="$attrs"
     />
     <textarea
       v-else-if="controlType === 'textarea'"
@@ -15,18 +16,14 @@
       :value="modelValue"
       @input="(e) => $emit('update:modelValue', e.target.value)"
     ></textarea>
-    <input
-      type="file"
-      class="form-control"
-      @change="(e) => $emit('uploadImage', e)"
-      v-else
-    />
+    <input type="file" class="form-control" v-else v-bind="$attrs" />
     <slot></slot>
   </div>
 </template>
 
 <script>
 export default {
+  inheritAttrs: false,
   emits: ["update:modelValue", "uploadImage"],
   props: {
     labelName: {
