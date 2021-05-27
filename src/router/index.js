@@ -8,6 +8,8 @@ import EditPost from "../views/Posts/EditPost";
 import UserPosts from "../views/Posts/UserPosts";
 import SearchPosts from "../views/Posts/SearchPosts";
 import AddContact from "../views/Posts/Contacts/AddContact";
+import NotFound from "../views/NotFound.vue";
+
 import { firebaseAuth } from "../firebase/init";
 
 const routes = [
@@ -72,6 +74,11 @@ const routes = [
     meta: {
       requiresGuest: true,
     },
+  },
+  {
+    path: "/:catchAll(.*)",
+    name: "NotFound",
+    component: NotFound,
   },
 ];
 
