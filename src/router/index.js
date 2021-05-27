@@ -6,6 +6,7 @@ import CreatePost from "../views/Posts/CreatePost";
 import PostDetails from "../views/Posts/PostDetails";
 import EditPost from "../views/Posts/EditPost";
 import UserPosts from "../views/Posts/UserPosts";
+import SearchPosts from "../views/Posts/SearchPosts";
 import AddContact from "../views/Posts/Contacts/AddContact";
 
 const routes = [
@@ -18,6 +19,11 @@ const routes = [
     path: "/posts/user",
     name: "UserPosts",
     component: UserPosts,
+  },
+  {
+    path: "/posts/search",
+    name: "SearchPosts",
+    component: SearchPosts,
   },
   {
     path: "/posts/create",

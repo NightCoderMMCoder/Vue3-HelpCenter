@@ -21,6 +21,8 @@
         type="text"
         placeholder="Search By Supports"
         class="form-control"
+        v-model="searchTerm"
+        @keyup.enter="searchPosts"
       />
       <div>
         <div v-if="user">
@@ -41,17 +43,25 @@
 </template>
 
 <script>
-import { computed } from "vue";
+import { computed, ref } from "vue";
 import { useStore } from "vuex";
+import { useRouter } from "vue-router";
 export default {
   setup() {
     const store = useStore();
+    const router = useRouter();
+
+    const searchTerm = ref("");
+    const searchPosts = () => {
+      router.push({ name: "SearchPosts", query: { term: searchTerm.value } });
+    };
+
     const user = computed(() => store.getters["Auth/user"]);
 
     const logout = () => {
       store.dispatch("Auth/logout");
     };
-    return { user, logout };
+    return { user, logout, searchTerm, searchPosts };
   },
 };
 </script>
