@@ -8,13 +8,17 @@ let lastDoc;
 export default {
   namespaced: true,
   state: () => ({
-    error: null,
+    posts: [],
     post: null,
     contacts: [],
+    error: null,
   }),
   mutations: {
     setError(state, error) {
       state.error = error;
+    },
+    setPosts(state, posts) {
+      state.posts = posts;
     },
     setPost(state, post) {
       state.post = post;
@@ -73,6 +77,15 @@ export default {
       } catch (error) {
         commit("setError", error.message);
       }
+    },
+    async getPosts({ commit }) {
+      postsRef.orderBy("createdAt", "desc").onSnapshot((snapshot) => {
+        const posts = snapshot.docs.map((doc) => ({
+          ...doc.data(),
+          id: doc.id,
+        }));
+        commit("setPosts", posts);
+      });
     },
     async getPost({ commit }, id) {
       commit("setError", null);
@@ -137,6 +150,9 @@ export default {
     },
   },
   getters: {
+    posts(state) {
+      return state.posts;
+    },
     post(state) {
       return state.post;
     },

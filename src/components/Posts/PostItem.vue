@@ -1,19 +1,21 @@
 <template>
   <div class="card">
     <div class="card-body">
-      <h2>Post Name</h2>
+      <h2>{{ post.name }}</h2>
       <div class="badge-groups">
-        <base-badge>CDM</base-badge>
+        <base-badge v-for="(support, idx) in post.supports" :key="idx">
+          {{ support }}
+        </base-badge>
       </div>
       <div class="contact-info">
         <h4>Contact Info</h4>
         <div>
           <span>Phone: </span>
-          <span>phone</span>
+          <span>{{ post.phone }}</span>
         </div>
-        <div>
+        <div v-if="post.email">
           <span>Email: </span>
-          <span>email</span>
+          <span>{{ post.email }}</span>
         </div>
       </div>
       <div class="btn-groups actions">
@@ -28,6 +30,7 @@
 import BaseBadge from "../UI/BaseBadge.vue";
 export default {
   components: { BaseBadge },
+  props: { post: Object },
 };
 </script>
 

@@ -1,9 +1,6 @@
 <template>
   <div class="posts-list">
-    <post-item></post-item>
-    <post-item></post-item>
-    <post-item></post-item>
-    <post-item></post-item>
+    <post-item v-for="post in posts" :key="post.id" :post="post"></post-item>
   </div>
 </template>
 
@@ -11,6 +8,7 @@
 import PostItem from "./PostItem.vue";
 export default {
   components: { PostItem },
+  props: { posts: Array },
 };
 </script>
 
