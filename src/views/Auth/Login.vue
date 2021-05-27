@@ -46,8 +46,8 @@ export default {
     store.commit("Auth/setError", null);
 
     const user = reactive({
-      email: "@gmail.com",
-      password: "123456",
+      email: "",
+      password: "",
     });
     useBeforeRouteLeave(user);
     const { validation, errors } = useValidation(user);

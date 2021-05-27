@@ -17,12 +17,16 @@ const routes = [
     path: "/",
     name: "Home",
     component: Home,
+    meta: {
+      title: "Home",
+    },
   },
   {
     path: "/posts/user",
     name: "UserPosts",
     component: UserPosts,
     meta: {
+      title: "My Posts",
       requiresAuth: true,
     },
   },
@@ -30,12 +34,16 @@ const routes = [
     path: "/posts/search",
     name: "SearchPosts",
     component: SearchPosts,
+    meta: {
+      title: "Search Posts",
+    },
   },
   {
     path: "/posts/create",
     name: "CreatePost",
     component: CreatePost,
     meta: {
+      title: "Create Posts",
       requiresAuth: true,
     },
   },
@@ -44,6 +52,7 @@ const routes = [
     name: "EditPost",
     component: EditPost,
     meta: {
+      title: "Edit Posts",
       requiresAuth: true,
     },
   },
@@ -51,11 +60,17 @@ const routes = [
     path: "/posts/:id",
     name: "PostDetails",
     component: PostDetails,
+    meta: {
+      title: "PostDetails",
+    },
     children: [
       {
         path: "contact/add",
         name: "AddContact",
         component: AddContact,
+        meta: {
+          title: "Add Contact",
+        },
       },
     ],
   },
@@ -64,6 +79,7 @@ const routes = [
     name: "Register",
     component: Register,
     meta: {
+      title: "Register",
       requiresGuest: true,
     },
   },
@@ -72,6 +88,7 @@ const routes = [
     name: "Login",
     component: Login,
     meta: {
+      title: "Login",
       requiresGuest: true,
     },
   },
@@ -79,6 +96,9 @@ const routes = [
     path: "/:catchAll(.*)",
     name: "NotFound",
     component: NotFound,
+    meta: {
+      title: "Not Found",
+    },
   },
 ];
 
@@ -94,7 +114,10 @@ const router = createRouter({
   },
 });
 
+let DEFAULT_TITLE = "Help Center";
 router.beforeEach((to, _, next) => {
+  console.log(to);
+  document.title = to.meta.title || DEFAULT_TITLE;
   if (to.matched.some((record) => record.meta.requiresAuth)) {
     if (firebaseAuth.currentUser) {
       next();
