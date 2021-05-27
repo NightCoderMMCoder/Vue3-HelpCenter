@@ -1,5 +1,6 @@
 <template>
   <div class="auth">
+    <base-spinner></base-spinner>
     <div class="card">
       <div class="card-header">Register</div>
       <div class="card-body">
@@ -46,6 +47,7 @@ export default {
   setup() {
     const store = useStore();
     const router = useRouter();
+    store.commit("Auth/setError", null);
     const user = reactive({
       name: "",
       email: "@gmail.com",

@@ -16,6 +16,7 @@ export default {
   },
   actions: {
     async register({ commit }, user) {
+      commit("setLoading", true, { root: true });
       commit("setError", null);
       try {
         const res = await firebaseAuth.createUserWithEmailAndPassword(
@@ -30,9 +31,12 @@ export default {
         });
       } catch (error) {
         commit("setError", error.message);
+      } finally {
+        commit("setLoading", false, { root: true });
       }
     },
     async login({ commit }, user) {
+      commit("setLoading", true, { root: true });
       commit("setError", null);
       try {
         await firebaseAuth.signInWithEmailAndPassword(
@@ -41,6 +45,8 @@ export default {
         );
       } catch (error) {
         commit("setError", error.message);
+      } finally {
+        commit("setLoading", false, { root: true });
       }
     },
     async handleAuthStateChanged({ commit }) {

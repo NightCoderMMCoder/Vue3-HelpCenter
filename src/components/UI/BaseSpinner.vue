@@ -1,5 +1,7 @@
 <template>
-  <Loading :active="isLoading" color="#951f1d" loader="bars" />
+  <teleport to="body">
+    <Loading :active="isLoading" color="#951f1d" loader="bars" />
+  </teleport>
 </template>
 
 <script>
@@ -13,7 +15,7 @@ export default {
   },
   setup() {
     const store = useStore();
-    const isLoading = computed(() => store.getters["Posts/loading"]);
+    const isLoading = computed(() => store.getters["loading"]);
     return { isLoading };
   },
 };

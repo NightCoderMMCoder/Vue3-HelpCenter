@@ -1,7 +1,7 @@
 <template>
   <div>
-    <base-spinner></base-spinner>
-    <div class="error" v-if="error">
+    <base-spinner v-if="loading"></base-spinner>
+    <div class="error" v-else-if="error">
       <h2>{{ error }}</h2>
       <button
         class="btn btn-secondary"
@@ -10,7 +10,7 @@
         Go Home
       </button>
     </div>
-    <div class="details" v-if="post">
+    <div class="details" v-else>
       <div>
         <h2>{{ post.name }}</h2>
         <img :src="post.imageURL" alt="" />
@@ -30,7 +30,7 @@
             <span>{{ post.email }}</span>
           </div>
         </div>
-        <div class="btn-groups">
+        <div class="btn-groups" v-if="user.uid === post.uid">
           <button
             class="btn btn-secondary"
             @click="$router.push({ name: 'EditPost', params: { id: post.id } })"
@@ -59,13 +59,11 @@
           </p>
         </div>
         <div class="btn-groups">
-          <button
-            class="btn btn-secondary"
-            @click="$router.push({ name: 'Home' })"
-          >
+          <button class="btn btn-secondary" @click="$router.go(-1)">
             Back
           </button>
           <button
+            v-if="$route.name !== 'AddContact'"
             class="btn btn-primary flat"
             @click="
               $router.push({ name: 'AddContact', params: { id: post.id } })
@@ -141,8 +139,20 @@ export default {
       }
     }
     onUnmounted(() => window.removeEventListener("scroll", handleScroll));
+    const loading = computed(() => store.getters["loading"]);
+    const user = computed(() => store.getters["Auth/user"]);
 
-    return { post, copyLink, link, isCopied, handleDelete, error, contacts };
+    return {
+      post,
+      copyLink,
+      link,
+      isCopied,
+      handleDelete,
+      error,
+      contacts,
+      loading,
+      user,
+    };
   },
 };
 </script>
