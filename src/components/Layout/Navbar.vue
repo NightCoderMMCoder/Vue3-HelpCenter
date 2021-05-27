@@ -9,6 +9,9 @@
           <router-link :to="{ name: 'Home' }">
             <li>Home</li>
           </router-link>
+          <router-link :to="{ name: 'UserPosts' }">
+            <li>My Posts</li>
+          </router-link>
           <router-link :to="{ name: 'CreatePost' }">
             <li>Create Post</li>
           </router-link>

@@ -30,14 +30,16 @@ export default {
     },
   },
   actions: {
-    async createPost({ dispatch, commit }, post) {
+    async createPost({ dispatch, commit, rootGetters }, post) {
       commit("setError", null);
+      let uid = rootGetters["Auth/user"].uid;
       const imageURL = await dispatch("uploadImage", post.image);
       try {
         let newPost = {
           ...post,
           imageURL,
           filePath: post.image.name,
+          uid,
         };
         delete newPost.image;
         postsRef.add(newPost);
@@ -86,6 +88,9 @@ export default {
         collectionRef = payload.collectionRef;
       } else {
         collectionRef = postsRefWithLimit;
+      }
+      if (payload.query) {
+        collectionRef = collectionRef.where(...payload.query);
       }
       collectionRef.onSnapshot((snapshot) => {
         if (!snapshot.empty) {
