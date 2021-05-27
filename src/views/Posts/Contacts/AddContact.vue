@@ -30,9 +30,9 @@
 
 <script>
 import { computed, reactive, toRefs } from "vue";
-import useValidation from "../../../hooks/validation";
-import BaseControlInput from "../../UI/BaseControlInput.vue";
+import useValidation from "@/hooks/validation";
 import { useStore } from "vuex";
+import BaseControlInput from "@/components/UI/BaseControlInput.vue";
 export default {
   components: { BaseControlInput },
   setup() {

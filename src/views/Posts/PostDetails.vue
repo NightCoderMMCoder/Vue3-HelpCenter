@@ -58,9 +58,14 @@
       </div>
       <div class="btn-groups">
         <button class="btn btn-secondary">Back</button>
-        <button class="btn btn-primary flat">Add Contact</button>
+        <button
+          class="btn btn-primary flat"
+          @click="$router.push({ name: 'AddContact', params: { id: post.id } })"
+        >
+          Add Contact
+        </button>
       </div>
-      <add-contact></add-contact>
+      <router-view></router-view>
     </div>
   </div>
 </template>
@@ -70,9 +75,8 @@ import { computed, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { useStore } from "vuex";
 import BaseBadge from "../../components/UI/BaseBadge.vue";
-import AddContact from "../../components/Posts/Contacts/AddContact.vue";
 export default {
-  components: { BaseBadge, AddContact },
+  components: { BaseBadge },
   setup() {
     const route = useRoute();
     const router = useRouter();

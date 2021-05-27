@@ -1,6 +1,7 @@
 import { db, fireStorage } from "../../firebase/init";
 import router from "../../router";
 const postsRef = db.collection("posts");
+const contactsRef = db.collection("contacts");
 const storageRef = fireStorage.ref("posts");
 
 export default {
@@ -94,8 +95,18 @@ export default {
       }
     },
 
-    async addContact(_, payload) {
-      console.log(payload);
+    async addContact({ rootGetters, commit }, payload) {
+      commit("setError", null);
+      const postId = rootGetters["Posts/post"].id;
+      try {
+        contactsRef.add({
+          ...payload,
+          postId,
+          createdAt: Date.now(),
+        });
+      } catch (error) {
+        commit("setError", error.message);
+      }
     },
   },
   getters: {

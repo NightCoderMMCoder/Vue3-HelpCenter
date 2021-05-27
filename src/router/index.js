@@ -5,6 +5,7 @@ import Login from "../views/Auth/Login.vue";
 import CreatePost from "../views/Posts/CreatePost";
 import PostDetails from "../views/Posts/PostDetails";
 import EditPost from "../views/Posts/EditPost";
+import AddContact from "../views/Posts/Contacts/AddContact";
 
 const routes = [
   {
@@ -31,6 +32,13 @@ const routes = [
     path: "/posts/:id",
     name: "PostDetails",
     component: PostDetails,
+    children: [
+      {
+        path: "contact/add",
+        name: "AddContact",
+        component: AddContact,
+      },
+    ],
   },
   {
     path: "/posts/edit/:id",
