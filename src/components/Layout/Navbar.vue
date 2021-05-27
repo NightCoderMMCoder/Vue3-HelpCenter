@@ -54,6 +54,7 @@ export default {
     const searchTerm = ref("");
     const searchPosts = () => {
       router.push({ name: "SearchPosts", query: { term: searchTerm.value } });
+      searchTerm.value = "";
     };
 
     const user = computed(() => store.getters["Auth/user"]);
