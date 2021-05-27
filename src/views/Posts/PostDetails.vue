@@ -75,7 +75,7 @@
 </template>
 
 <script>
-import { computed, ref } from "vue";
+import { computed, onUnmounted, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { useStore } from "vuex";
 import BaseBadge from "../../components/UI/BaseBadge.vue";
@@ -128,6 +128,7 @@ export default {
         store.dispatch("Posts/getContacts", postId);
       }
     }
+    onUnmounted(() => window.removeEventListener("scroll", handleScroll));
 
     return { post, copyLink, link, isCopied, handleDelete, error, contacts };
   },
