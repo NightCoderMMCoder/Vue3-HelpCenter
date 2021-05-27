@@ -1,4 +1,5 @@
 import { db, fireStorage } from "../../firebase/init";
+import router from "../../router";
 const postsRef = db.collection("posts");
 const storageRef = fireStorage.ref("posts");
 
@@ -33,10 +34,15 @@ export default {
       }
     },
     async updatePost({ commit, rootState, dispatch }, post) {
+      commit("setError", null);
       const { id: docId, filePath } = rootState.Posts.post;
       if (!post.image) {
         delete post.image;
-        await postsRef.doc(docId).update(post);
+        try {
+          await postsRef.doc(docId).update(post);
+        } catch (error) {
+          commit("setError", error.message);
+        }
       } else {
         await storageRef.child(filePath).delete();
         const imageURL = await dispatch("uploadImage", post.image);
@@ -46,7 +52,11 @@ export default {
           filePath: post.image.name,
         };
         delete newPost.image;
-        await postsRef.doc(docId).update(newPost);
+        try {
+          await postsRef.doc(docId).update(newPost);
+        } catch (error) {
+          commit("setError", error.message);
+        }
       }
     },
     async uploadImage({ commit }, image) {

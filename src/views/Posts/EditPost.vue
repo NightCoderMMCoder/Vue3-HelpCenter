@@ -72,7 +72,7 @@ import BaseControlInput from "../../components/UI/BaseControlInput.vue";
 import BaseBadge from "../../components/UI/BaseBadge.vue";
 import useValidation from "../../hooks/validation";
 import { useStore } from "vuex";
-import { useRoute, useRouter } from "vue-router";
+import { onBeforeRouteLeave, useRoute, useRouter } from "vue-router";
 
 export default {
   components: { BaseControlInput, BaseBadge },
@@ -131,12 +131,44 @@ export default {
       }
     };
 
-    const handleSubmit = () => {
+    const error = computed(() => store.getters["Posts/error"]);
+
+    const handleSubmit = async () => {
       let isValidate = validation({ email: false, image: false });
       if (isValidate) {
-        store.dispatch("Posts/updatePost", post);
+        await store.dispatch("Posts/updatePost", post);
+        if (!error.value) {
+          post.name = "";
+          post.link = "";
+          post.phone = "";
+          post.email = "";
+          post.supports = "";
+          post.image = "";
+          post.description = "";
+
+          router.push({ name: "PostDetails", params: { id: postId } });
+        }
       }
     };
+
+    onBeforeRouteLeave((_, _1, next) => {
+      let isData = false;
+      Object.values(post).forEach((val) => {
+        if (val) {
+          isData = true;
+        }
+      });
+      if (isData) {
+        const confirm = window.confirm(
+          "Do you really want to leave? You have unsaved changes!"
+        );
+        if (confirm) {
+          next();
+        }
+      } else {
+        next();
+      }
+    });
 
     return {
       ...toRefs(post),
