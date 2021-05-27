@@ -30,7 +30,7 @@
             <span>{{ post.email }}</span>
           </div>
         </div>
-        <div class="btn-groups" v-if="user.uid === post.uid">
+        <div class="btn-groups" v-if="user?.uid === post.uid">
           <button
             class="btn btn-secondary"
             @click="$router.push({ name: 'EditPost', params: { id: post.id } })"
@@ -75,7 +75,7 @@
         <router-view></router-view>
         <contacts-list
           :contacts="contacts"
-          v-if="contacts.length !== 0"
+          v-if="contacts.length !== 0 && post.uid === user?.uid"
         ></contacts-list>
       </div>
     </div>
@@ -83,7 +83,7 @@
 </template>
 
 <script>
-import { computed, onUnmounted, ref } from "vue";
+import { computed, onUnmounted, ref, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { useStore } from "vuex";
 import BaseBadge from "../../components/UI/BaseBadge.vue";
@@ -122,11 +122,6 @@ export default {
       }
     };
 
-    store.dispatch("Posts/getContacts", postId);
-    const contacts = computed(() => store.getters["Posts/contacts"]);
-
-    window.addEventListener("scroll", handleScroll);
-
     function handleScroll() {
       const {
         scrollHeight,
@@ -142,6 +137,18 @@ export default {
     const loading = computed(() => store.getters["loading"]);
     const user = computed(() => store.getters["Auth/user"]);
 
+    watch(
+      user,
+      (val) => {
+        if (val) {
+          store.dispatch("Posts/getContacts", postId);
+          window.addEventListener("scroll", handleScroll);
+        }
+      },
+      { immediate: true }
+    );
+
+    const contacts = computed(() => store.getters["Posts/contacts"]);
     return {
       post,
       copyLink,
