@@ -58,7 +58,9 @@
       </div>
       <div class="btn-groups">
         <button class="btn btn-secondary">Back</button>
+        <button class="btn btn-primary flat">Add Contact</button>
       </div>
+      <add-contact></add-contact>
     </div>
   </div>
 </template>
@@ -68,8 +70,9 @@ import { computed, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { useStore } from "vuex";
 import BaseBadge from "../../components/UI/BaseBadge.vue";
+import AddContact from "../../components/Posts/Contacts/AddContact.vue";
 export default {
-  components: { BaseBadge },
+  components: { BaseBadge, AddContact },
   setup() {
     const route = useRoute();
     const router = useRouter();

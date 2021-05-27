@@ -93,6 +93,10 @@ export default {
         commit("setError", error.message);
       }
     },
+
+    async addContact(_, payload) {
+      console.log(payload);
+    },
   },
   getters: {
     post(state) {
