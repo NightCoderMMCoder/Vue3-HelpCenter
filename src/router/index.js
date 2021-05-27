@@ -80,7 +80,6 @@ const router = createRouter({
   routes,
   linkExactActiveClass: "active",
   scrollBehavior(_, _1, savedPosition) {
-    console.log(savedPosition);
     if (savedPosition) {
       return savedPosition;
     }

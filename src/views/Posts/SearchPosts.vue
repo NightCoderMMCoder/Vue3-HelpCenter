@@ -1,5 +1,6 @@
 <template>
   <div>
+    <base-spinner></base-spinner>
     <h1>
       Search Posts By <span>{{ $route.query.term.toUpperCase() }}</span>
     </h1>

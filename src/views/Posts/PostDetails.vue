@@ -1,5 +1,6 @@
 <template>
   <div>
+    <base-spinner></base-spinner>
     <div class="error" v-if="error">
       <h2>{{ error }}</h2>
       <button

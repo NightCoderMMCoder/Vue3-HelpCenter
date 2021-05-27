@@ -1,5 +1,6 @@
 <template>
   <div class="home">
+    <base-spinner></base-spinner>
     <show-case></show-case>
     <div class="posts">
       <posts-list :posts="posts"></posts-list>

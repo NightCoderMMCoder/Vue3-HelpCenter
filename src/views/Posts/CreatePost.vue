@@ -1,8 +1,12 @@
 <template>
   <div class="create-post">
+    <base-spinner></base-spinner>
     <div class="card">
       <div class="card-header">Create Post</div>
       <div class="card-body">
+        <div class="error" v-if="error">
+          {{ error }}
+        </div>
         <form @submit.prevent="handleSubmit">
           <base-control-input label-name="Facebook Page Name" v-model="name">
             <small v-if="errors.name" class="error-message">
@@ -144,6 +148,7 @@ export default {
       removeSupport,
       handleSubmit,
       errors,
+      error,
     };
   },
 };

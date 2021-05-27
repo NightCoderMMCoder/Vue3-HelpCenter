@@ -16,6 +16,7 @@ export default {
     error: null,
     totalPosts: 0,
     PER_PAGE: 3,
+    loading: false,
   }),
   mutations: {
     setError(state, error) {
@@ -36,10 +37,14 @@ export default {
     setTotalPosts(state, total) {
       state.totalPosts = total;
     },
+    setLoading(state, payload) {
+      state.loading = payload;
+    },
   },
   actions: {
     async createPost({ dispatch, commit, rootGetters }, post) {
       commit("setError", null);
+      commit("setLoading", true);
       let uid = rootGetters["Auth/user"].uid;
       const imageURL = await dispatch("uploadImage", post.image);
       try {
@@ -48,11 +53,14 @@ export default {
           imageURL,
           filePath: post.image.name,
           uid,
+          createdAt: Date.now(),
         };
         delete newPost.image;
-        postsRef.add(newPost);
+        await postsRef.add(newPost);
       } catch (error) {
         commit("setError", error.message);
+      } finally {
+        commit("setLoading", false);
       }
     },
     async updatePost({ commit, rootState, dispatch }, post) {
@@ -91,6 +99,7 @@ export default {
       }
     },
     async getAllPosts({ commit }, query) {
+      commit("setLoading", true);
       let collectionRef;
       if (query) {
         collectionRef = postsRef.where(...query);
@@ -100,8 +109,10 @@ export default {
       collectionRef.onSnapshot((snapshot) => {
         commit("setTotalPosts", snapshot.docs.length);
       });
+      commit("setLoading", false);
     },
     async getPosts({ commit }, payload = {}) {
+      commit("setLoading", true);
       let collectionRef;
       if (payload.collectionRef) {
         collectionRef = payload.collectionRef;
@@ -121,6 +132,7 @@ export default {
           id: doc.id,
         }));
         commit("setPosts", posts);
+        commit("setLoading", false);
       });
     },
     async nextPosts({ dispatch }, query) {
@@ -142,6 +154,7 @@ export default {
     },
     async getPost({ commit }, id) {
       commit("setError", null);
+      commit("setLoading", true);
       try {
         const doc = await postsRef.doc(id).get();
         if (!doc.exists) {
@@ -153,9 +166,12 @@ export default {
         });
       } catch (error) {
         commit("setError", error.message);
+      } finally {
+        commit("setLoading", false);
       }
     },
     async deletePost({ commit, rootState }, id) {
+      commit("setLoading", true);
       const filePath = rootState.Posts.post.filePath;
       const contacts = rootState.Posts.contacts;
       commit("setError", null);
@@ -167,10 +183,13 @@ export default {
         await storageRef.child(filePath).delete();
       } catch (error) {
         commit("setError", error.message);
+      } finally {
+        commit("setLoading", false);
       }
     },
 
     async addContact({ rootGetters, commit }, payload) {
+      commit("setLoading", true);
       commit("setError", null);
       const postId = rootGetters["Posts/post"].id;
       try {
@@ -182,9 +201,11 @@ export default {
         router.push({ name: "Home" });
       } catch (error) {
         commit("setError", error.message);
+        commit("setLoading", false);
       }
     },
     async getContacts({ commit }, postId) {
+      commit("setLoading", true);
       contactsRef
         .where("postId", "==", postId)
         .orderBy("createdAt", "desc")
@@ -202,6 +223,7 @@ export default {
                 });
               }
             });
+            commit("setLoading", false);
           }
         });
     },
@@ -227,6 +249,9 @@ export default {
     },
     PER_PAGE(state) {
       return state.PER_PAGE;
+    },
+    loading(state) {
+      return state.loading;
     },
   },
 };

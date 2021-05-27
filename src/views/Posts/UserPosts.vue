@@ -1,5 +1,6 @@
 <template>
   <div>
+    <base-spinner></base-spinner>
     <posts-list :posts="posts"></posts-list>
     <Pagination
       v-if="totalPosts > PER_PAGE"

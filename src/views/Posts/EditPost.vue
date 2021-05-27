@@ -1,5 +1,6 @@
 <template>
   <div class="edit-post">
+    <base-spinner></base-spinner>
     <div class="card">
       <div class="card-header">Edit Post</div>
       <div class="card-body">
