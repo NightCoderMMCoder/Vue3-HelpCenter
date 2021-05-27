@@ -2,6 +2,7 @@
   <div>
     <posts-list :posts="posts"></posts-list>
     <Pagination
+      v-if="totalPosts > PER_PAGE"
       @prev-posts="prevPosts"
       @next-posts="nextPosts"
       :page="page"
@@ -27,7 +28,8 @@ export default {
     store.dispatch("Posts/getAllPosts", query);
     store.dispatch("Posts/getPosts", { query });
     const posts = computed(() => store.getters["Posts/posts"]);
-    // const totalPosts = computed(() => store.getters["Posts/totalPosts"]);
+    const totalPosts = computed(() => store.getters["Posts/totalPosts"]);
+    const PER_PAGE = store.getters["Posts/PER_PAGE"];
     const lastPage = computed(() => store.getters["Posts/lastPage"]);
 
     const prevPosts = () => {
@@ -39,7 +41,15 @@ export default {
       store.dispatch("Posts/nextPosts", query);
     };
 
-    return { posts, nextPosts, prevPosts, page, lastPage };
+    return {
+      posts,
+      nextPosts,
+      prevPosts,
+      page,
+      lastPage,
+      totalPosts,
+      PER_PAGE,
+    };
   },
 };
 </script>

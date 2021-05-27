@@ -6,6 +6,7 @@
     <div class="posts">
       <posts-list :posts="posts"></posts-list>
       <Pagination
+        v-if="totalPosts > PER_PAGE"
         @prev-posts="prevPosts"
         @next-posts="nextPosts"
         :page="page"
@@ -37,6 +38,8 @@ export default {
     getPosts();
     const posts = computed(() => store.getters["Posts/posts"]);
     const lastPage = computed(() => store.getters["Posts/lastPage"]);
+    const totalPosts = computed(() => store.getters["Posts/totalPosts"]);
+    const PER_PAGE = store.getters["Posts/PER_PAGE"];
 
     const prevPosts = () => {
       page.value--;
@@ -47,26 +50,37 @@ export default {
       store.dispatch("Posts/nextPosts", query);
     };
 
-    // onBeforeRouteUpdate((to, _, next) => {
-    //   const term = to.query.term.toUpperCase();
-    //   query = ["supports", "array-contains", term.toUpperCase()];
-    //   store.dispatch("Posts/getAllPosts", query);
-    //   getPosts();
-    //   next();
-    // });
+    onBeforeRouteUpdate((to, _, next) => {
+      page.value = 0;
+      const term = to.query.term.toUpperCase();
+      query = ["supports", "array-contains", term.toUpperCase()];
+      store.dispatch("Posts/getAllPosts", query);
+      getPosts();
+      next();
+    });
 
-    watch(
-      () => route.query.term,
-      (val) => {
-        page.value = 0;
-        const term = val.toUpperCase();
-        query = ["supports", "array-contains", term.toUpperCase()];
-        store.dispatch("Posts/getAllPosts", query);
-        getPosts();
-      }
-    );
+    // watch(
+    //   () => route.query.term,
+    //   (val) => {
+    //     if (val) {
+    //       page.value = 0;
+    //       const term = val.toUpperCase();
+    //       query = ["supports", "array-contains", term.toUpperCase()];
+    //       store.dispatch("Posts/getAllPosts", query);
+    //       getPosts();
+    //     }
+    //   }
+    // );
 
-    return { posts, nextPosts, prevPosts, page, lastPage };
+    return {
+      posts,
+      nextPosts,
+      prevPosts,
+      page,
+      lastPage,
+      totalPosts,
+      PER_PAGE,
+    };
   },
 };
 </script>

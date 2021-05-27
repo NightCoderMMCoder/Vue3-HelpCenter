@@ -15,6 +15,7 @@ export default {
     contacts: [],
     error: null,
     totalPosts: 0,
+    PER_PAGE: 3,
   }),
   mutations: {
     setError(state, error) {
@@ -30,6 +31,7 @@ export default {
       state.contacts.push(contact);
     },
     setTotalPosts(state, total) {
+      console.log(total);
       state.totalPosts = total;
     },
   },
@@ -216,6 +218,9 @@ export default {
     },
     lastPage(state) {
       return Math.floor((state.totalPosts - 1) / 3);
+    },
+    PER_PAGE(state) {
+      return state.PER_PAGE;
     },
   },
 };
