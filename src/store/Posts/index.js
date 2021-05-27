@@ -3,6 +3,7 @@ import router from "../../router";
 const postsRef = db.collection("posts");
 const contactsRef = db.collection("contacts");
 const storageRef = fireStorage.ref("posts");
+let lastDoc;
 
 export default {
   namespaced: true,
@@ -117,16 +118,21 @@ export default {
       contactsRef
         .where("postId", "==", postId)
         .orderBy("createdAt", "desc")
+        .startAfter(lastDoc || "")
         .limit(5)
         .onSnapshot((snapshot) => {
-          snapshot.docChanges().forEach((change) => {
-            if (change.type === "added") {
-              commit("setContact", {
-                id: change.doc.id,
-                ...change.doc.data(),
-              });
-            }
-          });
+          if (!snapshot.empty) {
+            lastDoc = snapshot.docs[snapshot.docs.length - 1];
+
+            snapshot.docChanges().forEach((change) => {
+              if (change.type === "added") {
+                commit("setContact", {
+                  id: change.doc.id,
+                  ...change.doc.data(),
+                });
+              }
+            });
+          }
         });
     },
   },

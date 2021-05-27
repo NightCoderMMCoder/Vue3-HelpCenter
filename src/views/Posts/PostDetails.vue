@@ -115,6 +115,20 @@ export default {
     store.dispatch("Posts/getContacts", postId);
     const contacts = computed(() => store.getters["Posts/contacts"]);
 
+    window.addEventListener("scroll", handleScroll);
+
+    function handleScroll() {
+      const {
+        scrollHeight,
+        scrollTop,
+        clientHeight,
+      } = document.documentElement;
+      let currentHeight = clientHeight + scrollTop + 1;
+      if (currentHeight >= scrollHeight) {
+        store.dispatch("Posts/getContacts", postId);
+      }
+    }
+
     return { post, copyLink, link, isCopied, handleDelete, error, contacts };
   },
 };
