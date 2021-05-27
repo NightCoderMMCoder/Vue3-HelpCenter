@@ -31,9 +31,10 @@
 <script>
 import { computed, reactive, ref, toRefs } from "vue";
 import { useStore } from "vuex";
-import { onBeforeRouteLeave, useRouter } from "vue-router";
+import { useRouter } from "vue-router";
 import BaseControlInput from "../../components/UI/BaseControlInput.vue";
 import useValidation from "../../hooks/validation";
+import useBeforeRouteLeave from "../../hooks/beforeRouteLeave";
 
 export default {
   components: { BaseControlInput },
@@ -44,28 +45,10 @@ export default {
       email: "@gmail.com",
       password: "123456",
     });
+    useBeforeRouteLeave(user);
     const { validation, errors } = useValidation(user);
 
     const error = computed(() => store.getters["Auth/error"]);
-
-    onBeforeRouteLeave((_, _1, next) => {
-      let isData = false;
-      Object.values(user).forEach((val) => {
-        if (val) {
-          isData = true;
-        }
-      });
-      if (isData) {
-        const confirm = window.confirm(
-          "Do you really want to leave? You have unsaved changes!"
-        );
-        if (confirm) {
-          next();
-        }
-      } else {
-        next();
-      }
-    });
 
     const handleSubmit = async () => {
       let isValidate = validation();

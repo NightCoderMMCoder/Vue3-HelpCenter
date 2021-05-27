@@ -68,11 +68,12 @@
 
 <script>
 import { computed, reactive, ref, toRefs, watch } from "vue";
+import { useStore } from "vuex";
+import { useRoute, useRouter } from "vue-router";
 import BaseControlInput from "../../components/UI/BaseControlInput.vue";
 import BaseBadge from "../../components/UI/BaseBadge.vue";
 import useValidation from "../../hooks/validation";
-import { useStore } from "vuex";
-import { onBeforeRouteLeave, useRoute, useRouter } from "vue-router";
+import useBeforeRouteLeave from "../../hooks/beforeRouteLeave";
 
 export default {
   components: { BaseControlInput, BaseBadge },
@@ -90,6 +91,8 @@ export default {
       image: "",
       description: "",
     });
+
+    useBeforeRouteLeave(post);
 
     const postId = route.params.id;
     const getPost = computed(() => store.getters["Posts/post"]);
@@ -150,25 +153,6 @@ export default {
         }
       }
     };
-
-    onBeforeRouteLeave((_, _1, next) => {
-      let isData = false;
-      Object.values(post).forEach((val) => {
-        if (val) {
-          isData = true;
-        }
-      });
-      if (isData) {
-        const confirm = window.confirm(
-          "Do you really want to leave? You have unsaved changes!"
-        );
-        if (confirm) {
-          next();
-        }
-      } else {
-        next();
-      }
-    });
 
     return {
       ...toRefs(post),

@@ -67,16 +67,19 @@
 </template>
 
 <script>
-import { reactive, ref, toRefs } from "vue";
+import { computed, reactive, ref, toRefs } from "vue";
+import { useStore } from "vuex";
+import { useRouter } from "vue-router";
 import BaseControlInput from "../../components/UI/BaseControlInput.vue";
 import BaseBadge from "../../components/UI/BaseBadge.vue";
 import useValidation from "../../hooks/validation";
-import { useStore } from "vuex";
+import useBeforeRouteLeave from "../../hooks/beforeRouteLeave";
 
 export default {
   components: { BaseControlInput, BaseBadge },
   setup() {
     const store = useStore();
+    const router = useRouter();
     const post = reactive({
       name: "",
       link: "",
@@ -86,6 +89,7 @@ export default {
       image: "",
       description: "",
     });
+    useBeforeRouteLeave(post);
     const { validation, errors } = useValidation(post);
     const support = ref("");
     const addSupport = () => {
@@ -112,10 +116,22 @@ export default {
       }
     };
 
-    const handleSubmit = () => {
+    const error = computed(() => store.getters["Posts/error"]);
+
+    const handleSubmit = async () => {
       let isValidate = validation({ email: false });
       if (isValidate) {
-        store.dispatch("Posts/createPost", post);
+        await store.dispatch("Posts/createPost", post);
+        if (!error.value) {
+          post.name = "";
+          post.link = "";
+          post.phone = "";
+          post.email = "";
+          post.supports = "";
+          post.image = "";
+          post.description = "";
+          router.push({ name: "Home" });
+        }
       }
     };
 
