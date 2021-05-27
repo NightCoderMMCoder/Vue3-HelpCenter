@@ -1,8 +1,10 @@
 import { db, fireStorage } from "../../firebase/init";
 import router from "../../router";
 const postsRef = db.collection("posts");
+const postsRefWithLimit = postsRef.orderBy("createdAt", "desc").limit(3);
 const contactsRef = db.collection("contacts");
 const storageRef = fireStorage.ref("posts");
+let firstDoc;
 let lastDoc;
 
 export default {
@@ -78,14 +80,35 @@ export default {
         commit("setError", error.message);
       }
     },
-    async getPosts({ commit }) {
-      postsRef.orderBy("createdAt", "desc").onSnapshot((snapshot) => {
+    async getPosts({ commit }, payload = {}) {
+      let collectionRef;
+      if (payload.collectionRef) {
+        collectionRef = payload.collectionRef;
+      } else {
+        collectionRef = postsRefWithLimit;
+      }
+      collectionRef.onSnapshot((snapshot) => {
+        if (!snapshot.empty) {
+          lastDoc = snapshot.docs[snapshot.docs.length - 1];
+          firstDoc = snapshot.docs[0];
+        }
         const posts = snapshot.docs.map((doc) => ({
           ...doc.data(),
           id: doc.id,
         }));
         commit("setPosts", posts);
       });
+    },
+    async nextPosts({ dispatch }) {
+      const nextPostsRef = postsRefWithLimit.startAfter(lastDoc);
+      dispatch("getPosts", { collectionRef: nextPostsRef });
+    },
+    async prevPosts({ dispatch }) {
+      const nextPostsRef = postsRef
+        .orderBy("createdAt", "desc")
+        .endBefore(firstDoc)
+        .limitToLast(3);
+      dispatch("getPosts", { collectionRef: nextPostsRef });
     },
     async getPost({ commit }, id) {
       commit("setError", null);
