@@ -9,6 +9,7 @@ export default {
   state: () => ({
     error: null,
     post: null,
+    contacts: [],
   }),
   mutations: {
     setError(state, error) {
@@ -16,6 +17,9 @@ export default {
     },
     setPost(state, post) {
       state.post = post;
+    },
+    setContact(state, contact) {
+      state.contacts.push(contact);
     },
   },
   actions: {
@@ -104,9 +108,26 @@ export default {
           postId,
           createdAt: Date.now(),
         });
+        router.push({ name: "Home" });
       } catch (error) {
         commit("setError", error.message);
       }
+    },
+    async getContacts({ commit }, postId) {
+      contactsRef
+        .where("postId", "==", postId)
+        .orderBy("createdAt", "desc")
+        .limit(5)
+        .onSnapshot((snapshot) => {
+          snapshot.docChanges().forEach((change) => {
+            if (change.type === "added") {
+              commit("setContact", {
+                id: change.doc.id,
+                ...change.doc.data(),
+              });
+            }
+          });
+        });
     },
   },
   getters: {
@@ -115,6 +136,9 @@ export default {
     },
     error(state) {
       return state.error;
+    },
+    contacts(state) {
+      return state.contacts;
     },
   },
 };

@@ -66,6 +66,10 @@
         </button>
       </div>
       <router-view></router-view>
+      <contacts-list
+        :contacts="contacts"
+        v-if="contacts.length !== 0"
+      ></contacts-list>
     </div>
   </div>
 </template>
@@ -75,8 +79,9 @@ import { computed, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { useStore } from "vuex";
 import BaseBadge from "../../components/UI/BaseBadge.vue";
+import ContactsList from "../../components/Posts/Contacts/ContactsList.vue";
 export default {
-  components: { BaseBadge },
+  components: { BaseBadge, ContactsList },
   setup() {
     const route = useRoute();
     const router = useRouter();
@@ -107,7 +112,10 @@ export default {
       }
     };
 
-    return { post, copyLink, link, isCopied, handleDelete, error };
+    store.dispatch("Posts/getContacts", postId);
+    const contacts = computed(() => store.getters["Posts/contacts"]);
+
+    return { post, copyLink, link, isCopied, handleDelete, error, contacts };
   },
 };
 </script>
