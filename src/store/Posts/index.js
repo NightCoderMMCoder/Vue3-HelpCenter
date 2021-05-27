@@ -14,6 +14,7 @@ export default {
     post: null,
     contacts: [],
     error: null,
+    totalPosts: 0,
   }),
   mutations: {
     setError(state, error) {
@@ -27,6 +28,9 @@ export default {
     },
     setContact(state, contact) {
       state.contacts.push(contact);
+    },
+    setTotalPosts(state, total) {
+      state.totalPosts = total;
     },
   },
   actions: {
@@ -82,6 +86,17 @@ export default {
         commit("setError", error.message);
       }
     },
+    async getAllPosts({ commit }, query) {
+      let collectionRef;
+      if (query) {
+        collectionRef = postsRef.where(...query);
+      } else {
+        collectionRef = postsRef;
+      }
+      collectionRef.onSnapshot((snapshot) => {
+        commit("setTotalPosts", snapshot.docs.length);
+      });
+    },
     async getPosts({ commit }, payload = {}) {
       let collectionRef;
       if (payload.collectionRef) {
@@ -104,16 +119,22 @@ export default {
         commit("setPosts", posts);
       });
     },
-    async nextPosts({ dispatch }) {
-      const nextPostsRef = postsRefWithLimit.startAfter(lastDoc);
+    async nextPosts({ dispatch }, query) {
+      let nextPostsRef = postsRefWithLimit.startAfter(lastDoc);
+      if (query) {
+        nextPostsRef = nextPostsRef.where(...query);
+      }
       dispatch("getPosts", { collectionRef: nextPostsRef });
     },
-    async prevPosts({ dispatch }) {
-      const nextPostsRef = postsRef
+    async prevPosts({ dispatch }, query) {
+      let prevPostsRef = postsRef
         .orderBy("createdAt", "desc")
         .endBefore(firstDoc)
         .limitToLast(3);
-      dispatch("getPosts", { collectionRef: nextPostsRef });
+      if (query) {
+        prevPostsRef = prevPostsRef.where(...query);
+      }
+      dispatch("getPosts", { collectionRef: prevPostsRef });
     },
     async getPost({ commit }, id) {
       commit("setError", null);
@@ -189,6 +210,12 @@ export default {
     },
     contacts(state) {
       return state.contacts;
+    },
+    totalPosts(state) {
+      return state.totalPosts;
+    },
+    lastPage(state) {
+      return Math.floor((state.totalPosts - 1) / 3);
     },
   },
 };
