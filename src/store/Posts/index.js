@@ -34,7 +34,6 @@ export default {
       state.contacts = [];
     },
     setTotalPosts(state, total) {
-      console.log(total);
       state.totalPosts = total;
     },
   },

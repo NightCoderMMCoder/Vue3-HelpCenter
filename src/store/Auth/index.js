@@ -1,4 +1,5 @@
 import { firebaseAuth } from "../../firebase/init";
+import router from "../../router";
 export default {
   namespaced: true,
   state: () => ({
@@ -59,6 +60,7 @@ export default {
       commit("setError", null);
       try {
         await firebaseAuth.signOut();
+        router.push({ name: "Login" });
       } catch (error) {
         commit("setError", error.message);
       }

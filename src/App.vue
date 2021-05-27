@@ -1,7 +1,11 @@
 <template>
   <Navbar />
   <main class="container">
-    <router-view />
+    <router-view v-slot="{ Component }">
+      <transition name="route" mode="out-in">
+        <component :is="Component"></component>
+      </transition>
+    </router-view>
   </main>
 </template>
 
@@ -16,3 +20,18 @@ export default {
   },
 };
 </script>
+
+<style lang="scss" scoped>
+.route-enter-from {
+  opacity: 0;
+  transform: translateY(-30px);
+}
+.route-leave-to {
+  opacity: 0;
+  transform: translateY(30px);
+}
+.route-enter-active,
+.route-leave-active {
+  transition: all 0.3s linear;
+}
+</style>

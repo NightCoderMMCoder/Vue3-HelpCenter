@@ -1,75 +1,84 @@
 <template>
-  <div class="error" v-if="error">
-    <h2>{{ error }}</h2>
-    <button
-      class="btn btn-secondary"
-      @click="$router.replace({ name: 'Home' })"
-    >
-      Go Home
-    </button>
-  </div>
-  <div class="details" v-if="post">
-    <div>
-      <h2>{{ post.name }}</h2>
-      <img :src="post.imageURL" alt="" />
-      <div>
-        <base-badge v-for="(support, idx) in post.supports" :key="idx">
-          {{ support }}
-        </base-badge>
-      </div>
-      <div class="contact-info">
-        <h4>Contact Info</h4>
-        <div>
-          <span>Phone: </span>
-          <span>{{ post.phone }}</span>
-        </div>
-        <div v-if="post.email">
-          <span>Email: </span>
-          <span>{{ post.email }}</span>
-        </div>
-      </div>
-      <div class="btn-groups">
-        <button
-          class="btn btn-secondary"
-          @click="$router.push({ name: 'EditPost', params: { id: post.id } })"
-        >
-          Edit
-        </button>
-        <button class="btn btn-primary" @click="handleDelete">Delete</button>
-      </div>
+  <div>
+    <div class="error" v-if="error">
+      <h2>{{ error }}</h2>
+      <button
+        class="btn btn-secondary"
+        @click="$router.replace({ name: 'Home' })"
+      >
+        Go Home
+      </button>
     </div>
-    <div>
-      <div class="link">
-        <p class="copy">
-          <span class="link">{{ post.link }}</span>
-          <i class="fas fa-copy" @click="copyLink"></i>
-        </p>
-        <input type="text" :value="post.link" ref="link" />
-        <a href="" target="_blank">
-          <button class="btn btn-primary">Go Facebook Page</button>
-        </a>
+    <div class="details" v-if="post">
+      <div>
+        <h2>{{ post.name }}</h2>
+        <img :src="post.imageURL" alt="" />
+        <div>
+          <base-badge v-for="(support, idx) in post.supports" :key="idx">
+            {{ support }}
+          </base-badge>
+        </div>
+        <div class="contact-info">
+          <h4>Contact Info</h4>
+          <div>
+            <span>Phone: </span>
+            <span>{{ post.phone }}</span>
+          </div>
+          <div v-if="post.email">
+            <span>Email: </span>
+            <span>{{ post.email }}</span>
+          </div>
+        </div>
+        <div class="btn-groups">
+          <button
+            class="btn btn-secondary"
+            @click="$router.push({ name: 'EditPost', params: { id: post.id } })"
+          >
+            Edit
+          </button>
+          <button class="btn btn-primary" @click="handleDelete">Delete</button>
+        </div>
       </div>
-      <small v-if="isCopied">Link copied successfully!</small>
-      <div class="desc">
-        <h4>Description:</h4>
-        <p>
-          {{ post.description }}
-        </p>
+      <div>
+        <div class="link">
+          <p class="copy">
+            <span class="link">{{ post.link }}</span>
+            <i class="fas fa-copy" @click="copyLink"></i>
+          </p>
+          <input type="text" :value="post.link" ref="link" />
+          <a href="" target="_blank">
+            <button class="btn btn-primary">Go Facebook Page</button>
+          </a>
+        </div>
+        <small v-if="isCopied">Link copied successfully!</small>
+        <div class="desc">
+          <h4>Description:</h4>
+          <p>
+            {{ post.description }}
+          </p>
+        </div>
+        <div class="btn-groups">
+          <button
+            class="btn btn-secondary"
+            @click="$router.push({ name: 'Home' })"
+          >
+            Back
+          </button>
+          <button
+            class="btn btn-primary flat"
+            @click="
+              $router.push({ name: 'AddContact', params: { id: post.id } })
+            "
+          >
+            Add Contact
+          </button>
+        </div>
+        <router-view></router-view>
+        <contacts-list
+          :contacts="contacts"
+          v-if="contacts.length !== 0"
+        ></contacts-list>
       </div>
-      <div class="btn-groups">
-        <button class="btn btn-secondary">Back</button>
-        <button
-          class="btn btn-primary flat"
-          @click="$router.push({ name: 'AddContact', params: { id: post.id } })"
-        >
-          Add Contact
-        </button>
-      </div>
-      <router-view></router-view>
-      <contacts-list
-        :contacts="contacts"
-        v-if="contacts.length !== 0"
-      ></contacts-list>
     </div>
   </div>
 </template>
