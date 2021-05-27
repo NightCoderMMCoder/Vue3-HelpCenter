@@ -30,6 +30,9 @@ export default {
     setContact(state, contact) {
       state.contacts.push(contact);
     },
+    setContactsToDefault(state) {
+      state.contacts = [];
+    },
     setTotalPosts(state, total) {
       console.log(total);
       state.totalPosts = total;
@@ -155,8 +158,12 @@ export default {
     },
     async deletePost({ commit, rootState }, id) {
       const filePath = rootState.Posts.post.filePath;
+      const contacts = rootState.Posts.contacts;
       commit("setError", null);
       try {
+        contacts.forEach(async (contact) => {
+          await contactsRef.doc(contact.id).delete();
+        });
         await postsRef.doc(id).delete();
         await storageRef.child(filePath).delete();
       } catch (error) {

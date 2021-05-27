@@ -87,6 +87,8 @@ export default {
     const router = useRouter();
     const store = useStore();
 
+    store.commit("Posts/setContactsToDefault");
+
     const postId = route.params.id;
     const post = computed(() => store.getters["Posts/post"]);
     store.dispatch("Posts/getPost", postId);

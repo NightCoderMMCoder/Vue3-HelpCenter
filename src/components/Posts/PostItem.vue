@@ -19,8 +19,20 @@
         </div>
       </div>
       <div class="btn-groups actions">
-        <button class="btn btn-primary">View Details</button>
-        <button class="btn btn-primary flat">Contact</button>
+        <button
+          class="btn btn-primary"
+          @click="
+            $router.push({ name: 'PostDetails', params: { id: post.id } })
+          "
+        >
+          View Details
+        </button>
+        <button
+          class="btn btn-primary flat"
+          @click="$router.push({ name: 'AddContact', params: { id: post.id } })"
+        >
+          Contact
+        </button>
       </div>
     </div>
   </div>
